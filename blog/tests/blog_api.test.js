@@ -78,3 +78,14 @@ test('check id',async () => {
     expect(response.body[1].id).toBeDefined()
 })
 })
+describe('test in 4.10',() => {
+    beforeEach(async ()=>{
+        await Blog.deleteMany({})
+        let blogObject = new Blog(initialTestBlogs[0])
+        await blogObject.save()
+        blogObject = new Blog(initialTestBlogs[1])
+        await blogObject.save()
+    })
+    
+
+})
