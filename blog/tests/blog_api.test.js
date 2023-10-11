@@ -130,3 +130,21 @@ describe('test in 4.11',() =>{
 
     },100000)
 })
+describe('test in 4.12',()=>{
+    test('400 Bad Request with no title and url',async () =>{
+        const noTitleBlog= {
+            author: "Empty Title TEST",
+            url: "http://test/test/test.html"
+        }
+        const noUrlBlog={
+            title: "Empty Url test",
+            author: "TEST TEST TEST"
+        }
+        await api.post('/api/blogs')
+                .send(noTitleBlog)
+                .expect(400)
+        await api.post('/api/blogs')
+                .send(noUrlBlog)
+                .expect(400)
+    })
+})
