@@ -148,3 +148,24 @@ describe('test in 4.12',()=>{
                 .expect(400)
     })
 })
+describe('test in 4.13',() => {
+    beforeEach(async () =>{
+        await Blog.deleteMany({})
+        let blogObject = new Blog(initialTestBlogs[0])
+        await blogObject.save()
+    })
+    test('delete one blog',async () => {
+        const initBlogList=await api.get('/api/blogs')
+        console.log(initBlogList.body)
+        const initBlogNum=initBlogList.body.length
+        const initBlogId=initBlogList.body[0].id
+
+        await api.delete(`/api/blogs/${initBlogId}`)
+            .expect(204)
+        const deletedBlogList=await api.get('/api/blogs')
+        expect(deletedBlogList.body).toHaveLength(initBlogNum-1)
+    })
+})
+describe('test in 4.14',() =>{
+    
+})
