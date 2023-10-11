@@ -86,6 +86,26 @@ describe('test in 4.10',() => {
         blogObject = new Blog(initialTestBlogs[1])
         await blogObject.save()
     })
-    
+    test('test http post',async () =>{
+        const testBlogObject={
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+            likes: 12
+        }
+        const initialBloglist= await Blog.find({})
+        console.log(initialBloglist)
+        const initialLength= initialBloglist.length
+        await api
+            .post('/api/blogs')
+            .send(testBlogObject)
+            .expect(201)
+            .expect('Content-Type',/application\/json/)
+        const response= await api.get('/api/blogs')
+        const addedBlogs= response.body.map(r=>r.content)
+        console.log(addedBlogs)
+        console.log(addedBlogs[1])
+        expect(addedBlogs).toHaveLength(initialLength+1)
+    },100000)
 
 })
