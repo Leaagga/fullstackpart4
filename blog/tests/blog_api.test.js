@@ -109,3 +109,24 @@ describe('test in 4.10',() => {
     },100000)
 
 })
+describe('test in 4.11',() =>{
+    beforeEach(async ()=>{
+        await Blog.deleteMany({})
+    })
+    test('test default likes is 0',async () =>{
+        const emptyBlog=await api.get('/api/blogs')
+        console.log(emptyBlog.body)
+        expect(emptyBlog.body).toHaveLength(0)
+        const emptyLikesBLog={
+            title: "Empty Likes test",
+            author: "TEST TEST TEST",
+            url: "http://test/test/test.html"
+        }
+        await api.post('/api/blogs').send(emptyLikesBLog)
+        response=await api.get('/api/blogs')
+        console.log(response.body)
+        console.log(response.data)
+        expect(response.body[0].likes).toEqual(0)
+
+    },100000)
+})
