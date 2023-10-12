@@ -9,7 +9,7 @@ const initialTestBlogs = [
     title: "React patterns",
     author: "Michael Chan",
     url: "https://reactpatterns.com/",
-    likes: 7,
+    likes: 7
   },
   {
     title: "Go To Statement Considered Harmful",
@@ -167,5 +167,30 @@ describe('test in 4.13',() => {
     })
 })
 describe('test in 4.14',() =>{
-    
+    beforeEach(async () =>{
+        await Blog.deleteMany({})
+        await Blog.insertMany(initialTestBlogs)
+    },10000)
+    test('test update blog\'s likes',async () =>{
+        const updateBlogList=await api.get('/api/blogs')
+        console.log(updateBlogList.body)
+        const newLikes={
+                title: "React patterns",
+                author: "Michael Chan",
+                url: "https://reactpatterns.com/",
+                likes: 100
+            }
+        console.log(newLikes)
+        const putId=updateBlogList.body[0].id
+        console.log(putId)
+        await api.put(`/api/blogs/${putId}`)
+                .send(newLikes)
+                .expect(200)
+        const newBlog=await api.get('/api/blogs')
+        console.log(newBlog.body)
+        expect(newBlog.body[0].likes).toBe(100)
+    },1000000)
+})
+afterAll(async () => {
+   await mongoose.connection.close()
 })
