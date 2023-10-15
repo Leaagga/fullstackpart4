@@ -20,17 +20,17 @@ blogsRouter.get('/',async (request, response) => {
 
 blogsRouter.post('/',async (request, response) => {
   const body=request.body
-  const token = request.token
-  console.log(request.token)
-  const decodedToken = jwt.verify(token,config.SECRET)
-    console.log(token)
-    console.log(decodedToken)
-  if (!decodedToken.id){
-    return response.status(401).json({error:'token missing or invalid'})
-  }
+  // const token = request.token
+  // console.log(request.token)
+  // const decodedToken = jwt.verify(token,config.SECRET)
+  //   console.log(token)
+  //   console.log(decodedToken)
+  // if (!decodedToken.id){
+  //   return response.status(401).json({error:'token missing or invalid'})
+  // }
   
-  const user = await User.findById(decodedToken.id)
-
+  // const user = await User.findById(decodedToken.id)
+  const user=request.user
   console.log(user)
   const blog = new Blog(
     {author:body.author,
@@ -52,19 +52,19 @@ blogsRouter.post('/',async (request, response) => {
   }
 })
 blogsRouter.delete('/:id',async (request,response) => {
-  const token =request.token
-  try{
-  jwt.verify(token,config.SECRET)
-  }catch{
-    return response.status(401).json({error:'token missing or invalid'})
-  }
-  const decodedToken = jwt.verify(token,config.SECRET)
-  if (!decodedToken.id){
-    return response.status(401).json({error:'token missing or invalid'})
-  }
-  const user = await User.findById(decodedToken.id)
-  console.log(decodedToken.id)
-
+  // const token =request.token
+  // try{
+  // jwt.verify(token,config.SECRET)
+  // }catch{
+  //   return response.status(401).json({error:'token missing or invalid'})
+  // }
+  // const decodedToken = jwt.verify(token,config.SECRET)
+  // if (!decodedToken.id){
+  //   return response.status(401).json({error:'token missing or invalid'})
+  // }
+  // const user = await User.findById(decodedToken.id)
+  // console.log(decodedToken.id)
+  const user=request.user
   const reqId=request.params.id
   const blog=await Blog.findById(reqId)
   if (!blog.user.toString()==user.id.toString){
