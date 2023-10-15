@@ -1,9 +1,11 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+const User= require('../models/user')
 
-const api = supertest(app)
 const Blog=require('../models/blog')
+const usersRouter = require('../controllers/users')
+const api = supertest(app)
 const initialTestBlogs = [
   {
     title: "React patterns",
@@ -41,6 +43,18 @@ const initialTestBlogs = [
     url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
     likes: 2
   }
+]
+const initialUser = [
+    {
+    name:'aaaaa',
+    username:'aaaaa',
+    password:'aaaaa'
+},{
+    name:'bbbbb',
+    username:'bbbbb',
+    password:'bbbbb'
+
+}
 ]
 describe('test in 4.8',()=>{
 beforeEach(async ()=>{
@@ -85,7 +99,12 @@ describe('test in 4.10',() => {
         await blogObject.save()
         blogObject = new Blog(initialTestBlogs[1])
         await blogObject.save()
-    })
+        await User.deleteMany({})
+        const response=await api.post('/api/users')
+                .send(initialUser[0])
+
+
+    },1000000)
     test('test http post',async () =>{
         const testBlogObject={
             title: "Canonical string reduction",
@@ -94,14 +113,28 @@ describe('test in 4.10',() => {
             likes: 12
         }
         const initialBloglist= await Blog.find({})
-        console.log(initialBloglist)
         const initialLength= initialBloglist.length
+        // const userObject=await api.get('/api/users')
+        // const userList=userObject.body
+        // console.log(userObject)
+        // console.log(userList)
+        // const { username, password }=userList[0]
+        // console.log(password)
+        const user=await api.post('/api/login')
+                .send(
+                    {username:"aaaaa",
+                    password:"aaaaa"})
+        console.log(user)
+        const token='bearer '+user.body.token
+        console.log(token)
         await api
             .post('/api/blogs')
+            .set('Authorization', token)
             .send(testBlogObject)
             .expect(201)
             .expect('Content-Type',/application\/json/)
         const response= await api.get('/api/blogs')
+                                .set('Authorization', token)
         const addedBlogs= response.body.map(r=>r.content)
         console.log(addedBlogs)
         console.log(addedBlogs[1])

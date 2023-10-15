@@ -2,17 +2,17 @@ const config=require("./config")
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const User= require('../models/user')
-const tokenExtractor=(request,response,next)=>{
+
+const userExtractor =async (request, response, next ) =>{
     const authorization = request.get('authorization')
+    if (!authorization){
+        console.log('token missing')
+        return response.status(401).json('token missing')
+    }
     console.log(authorization)
     console.log(authorization.substring(7))
     request.token=authorization && authorization.toLowerCase().startsWith('bearer ')? authorization.substring(7): null
-    next()
 
-}
-const userExtractor =async (request, response, next ) =>{
-            console.log(config.SECRET)
-        console.log(process.env.SECRET)
     const token = request.token
     try{
         console.log(config.SECRET)
@@ -34,4 +34,4 @@ const userExtractor =async (request, response, next ) =>{
     next()
 
 }
-module.exports = { tokenExtractor, userExtractor }
+module.exports = {  userExtractor }
